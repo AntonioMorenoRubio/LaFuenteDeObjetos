@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace _31_FountainOfObjects
+﻿namespace _31_FountainOfObjects
 {
     public static class Game
     {
@@ -16,31 +9,28 @@ namespace _31_FountainOfObjects
         const ConsoleColor FOUNTAINTEXTCOLOR = ConsoleColor.Blue;
 
         static int[][] rooms;
-        static (int Row, int Column) entrancePosition = (0, 0);
-        static (int Row, int Column) playerPosition = entrancePosition;
-        static (int Row, int Column) fountainPosition = (0, 2);
+        static int difficulty = 0;
+        static int[] cavernSizeByDifficulty = [4, 6, 8];
+        static (int Row, int Column)[] entrancePosition = { (0, 0), (2, 0), (6, 7) };
+        static (int Row, int Column)[] fountainPosition = { (0, 2), (3, 3), (5, 2) };
+        static (int Row, int Column) playerPosition;
         static bool gameCompleted = false;
         static bool fountainActivated = false;
 
         public static void Boot()
         {
-            Console.WriteLine("Booting...");
+            DisplayDescriptiveText("This game can be played in a 'small', 'medium' or 'large' game.\n" +
+                "By default the game plays a 'small' game.\n" +
+                "Please choose your option: ");
+            EvaluatePlayerInputForDifficulty();
 
             rooms =
             [
-                new int[4],
-                new int[4]
+                new int[cavernSizeByDifficulty[difficulty]],
+                new int[cavernSizeByDifficulty[difficulty]]
             ];
 
-            //Console.WriteLine($"Player position at x:{playerPosition.Column}, y:{playerPosition.Row}.");
-            //Console.WriteLine($"Fountain position at x:{fountainPosition.Column}, y:{fountainPosition.Row}.");
-
-            //Console.WriteLine("Prueba de textos:");
-            //DisplayNarrativeText("Prueba de texto narrativo.");
-            //DisplayDescriptiveText("Prueba de texto descriptivo.");
-            //DisplayPlayerInputText("Prueba de texto de entrada del jugador.");
-            //DisplayEntranceLightText("Prueba de texto de la luz de la entrada.");
-            //DisplayFountainText("Prueba de texto de la fuente de objetos.");
+            playerPosition = entrancePosition[difficulty];
 
             Console.Clear();
             PlayGame();
@@ -53,7 +43,7 @@ namespace _31_FountainOfObjects
                 Console.WriteLine("------------------------------------------------------------------------------------------");
                 Console.WriteLine($"You are in the room at (Row:{playerPosition.Row}, Column:{playerPosition.Column}).");
 
-                if (playerPosition == entrancePosition)
+                if (playerPosition == entrancePosition[difficulty])
                 {
                     if (fountainActivated == true)
                     {
@@ -66,7 +56,7 @@ namespace _31_FountainOfObjects
                         DisplayEntranceLightText("You see light in this room coming from outside the cavern. This is the entrance.");
                     }
                 }
-                if (playerPosition == fountainPosition)
+                if (playerPosition == fountainPosition[difficulty])
                 {
                     if (fountainActivated == false)
                     {
@@ -77,12 +67,11 @@ namespace _31_FountainOfObjects
                     }
                 }
                 Console.Write("What do you want to do? ");
-                EvaluatePlayerInput();
-                Console.ForegroundColor = DESCRIPTIVETEXTCOLOR;
+                EvaluatePlayerActionsInGameLoop();
             }
         }
 
-        private static void EvaluatePlayerInput()
+        private static void EvaluatePlayerActionsInGameLoop()
         {
             Console.ForegroundColor = PLAYERINPUTTEXTCOLOR;
             string? playerInput = Console.ReadLine();
@@ -97,7 +86,7 @@ namespace _31_FountainOfObjects
                         playerPosition.Column--;
                     break;
                 case ("move east"):
-                    if (playerPosition.Column != 3)
+                    if (playerPosition.Column < rooms[1].Length - 1)
                         playerPosition.Column++;
                     break;
                 case ("move north"):
@@ -105,16 +94,39 @@ namespace _31_FountainOfObjects
                         playerPosition.Row--;
                     break;
                 case ("move south"):
-                    if (playerPosition.Row != 3)
+                    if (playerPosition.Row < rooms[0].Length - 1)
                         playerPosition.Row++;
                     break;
                 case ("enable fountain"):
-                    if (playerPosition == fountainPosition)
+                    if (playerPosition == fountainPosition[difficulty])
                         fountainActivated = true;
                     break;
                 default:
                     break;
             }
+            Console.ForegroundColor = DESCRIPTIVETEXTCOLOR;
+        }
+
+        private static void EvaluatePlayerInputForDifficulty()
+        {
+            Console.ForegroundColor = PLAYERINPUTTEXTCOLOR;
+            string? playerInput = Console.ReadLine();
+
+            if (playerInput == null)
+                return;
+
+            switch (playerInput.ToLower())
+            {
+                case ("medium"):
+                    difficulty = 1;
+                    break;
+                case ("large"):
+                    difficulty = 2;
+                    break;
+                default:
+                    break;
+            }
+            Console.ForegroundColor = DESCRIPTIVETEXTCOLOR;
         }
 
         static void DisplayNarrativeText(string text)
