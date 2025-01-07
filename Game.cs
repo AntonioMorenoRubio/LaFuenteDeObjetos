@@ -1,4 +1,5 @@
-﻿namespace _31_FountainOfObjects
+﻿
+namespace _31_FountainOfObjects
 {
     public static class Game
     {
@@ -13,9 +14,16 @@
         static int[] cavernSizeByDifficulty = [4, 6, 8];
         static (int Row, int Column)[] entrancePosition = { (0, 0), (2, 0), (6, 7) };
         static (int Row, int Column)[] fountainPosition = { (0, 2), (3, 3), (5, 2) };
+        static (int Row, int Column)[][] pitsPositionByDifficulty =
+        {
+            [(0, 1)],
+            [(2, 2), (4, 3)],
+            [(2, 3),(2, 7),(5, 4),(7, 2)]
+        };
         static (int Row, int Column) playerPosition;
         static bool gameCompleted = false;
         static bool fountainActivated = false;
+        static bool playerDead = false;
 
         public static void Boot()
         {
@@ -66,10 +74,27 @@
                         DisplayFountainText("You hear the rushing waters from the Fountain of Objects. It has ben reactivated!");
                     }
                 }
+                foreach ((int, int) pit in pitsPositionByDifficulty[difficulty])
+                {
+                    if (playerPosition == pit)
+                    {
+                        playerDead = true;
+                        DisplayDescriptiveText("You fall through a bottomless pit to your death. Game Over.");
+                        break;
+                    }
+                    else if (pit.Item2 - playerPosition.Column >= -1 && pit.Item2 - playerPosition.Column <= 1
+                        && pit.Item1 - playerPosition.Row >= -1 && pit.Item1 - playerPosition.Row <= 1)
+                    {
+                        DisplayDescriptiveText("You feel a draft. There is a pit in a nearby room.");
+                    }
+                }
+                if (playerDead)
+                    break;
+
                 Console.Write("What do you want to do? ");
                 EvaluatePlayerActionsInGameLoop();
             }
-        }
+        }  
 
         private static void EvaluatePlayerActionsInGameLoop()
         {
