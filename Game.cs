@@ -26,6 +26,12 @@ namespace _31_FountainOfObjects
             [(0, 1)],
             [(4, 2),(3, 6)]
         };
+        static (int Row, int Column)[][] amaroksPositionByDifficulty =
+        {
+            [(2, 1)],
+            [(1, 4), (4, 1)],
+            [(2, 1),(2, 5),(6, 3)]
+        };
 
         static (int Row, int Column) playerPosition;
         static bool gameCompleted = false;
@@ -94,6 +100,23 @@ namespace _31_FountainOfObjects
                         && pit.Item1 - playerPosition.Row >= -1 && pit.Item1 - playerPosition.Row <= 1)
                     {
                         DisplayDescriptiveText("You feel a draft. There is a pit in a nearby room.");
+                    }
+                }
+                if (playerDead)
+                    break;
+
+                foreach ((int, int) amarok in amaroksPositionByDifficulty[difficulty])
+                {
+                    if (playerPosition == amarok)
+                    {
+                        playerDead = true;
+                        DisplayDescriptiveText("An amarok leaps onto you, biting you fiercely with its teeth, killing you. Game Over.");
+                        break;
+                    }
+                    else if (amarok.Item2 - playerPosition.Column >= -1 && amarok.Item2 - playerPosition.Column <= 1
+                        && amarok.Item1 - playerPosition.Row >= -1 && amarok.Item1 - playerPosition.Row <= 1)
+                    {
+                        DisplayDescriptiveText("You can smell the rotten stench of an amarok in a nearby room.");
                     }
                 }
                 if (playerDead)
