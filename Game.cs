@@ -13,8 +13,8 @@ namespace _31_FountainOfObjects
         static int[][] rooms;
         static int difficulty = 0;
         static int[] cavernSizeByDifficulty = [4, 6, 8];
-        static (int Row, int Column)[] entrancePosition = { (0, 0), (2, 0), (6, 7) };
-        static (int Row, int Column)[] fountainPosition = { (0, 2), (3, 3), (5, 2) };
+        static (int Row, int Column)[] entrancePositionByDifficulty = { (0, 0), (2, 0), (6, 7) };
+        static (int Row, int Column)[] fountainPositionByDifficulty = { (0, 2), (3, 3), (5, 2) };
         static (int Row, int Column)[][] pitsPositionByDifficulty =
         {
             [(0, 1)],
@@ -53,7 +53,7 @@ namespace _31_FountainOfObjects
                 new int[cavernSizeByDifficulty[difficulty]]
             ];
 
-            playerPosition = entrancePosition[difficulty];
+            playerPosition = entrancePositionByDifficulty[difficulty];
 
             Console.Clear();
             PlayGame();
@@ -77,7 +77,7 @@ namespace _31_FountainOfObjects
                 Console.WriteLine($"You are in the room at (Row:{playerPosition.Row}, Column:{playerPosition.Column}).");
                 Console.WriteLine($"You are carrying {arrows} arrows.");
 
-                if (playerPosition == entrancePosition[difficulty])
+                if (playerPosition == entrancePositionByDifficulty[difficulty])
                 {
                     if (fountainActivated == true)
                     {
@@ -90,7 +90,7 @@ namespace _31_FountainOfObjects
                         DisplayEntranceLightText("You see light in this room coming from outside the cavern. This is the entrance.");
                     }
                 }
-                if (playerPosition == fountainPosition[difficulty])
+                if (playerPosition == fountainPositionByDifficulty[difficulty])
                 {
                     if (fountainActivated == false)
                     {
@@ -211,7 +211,7 @@ namespace _31_FountainOfObjects
                         playerPosition.Row++;
                     break;
                 case ("enable fountain"):
-                    if (playerPosition == fountainPosition[difficulty])
+                    if (playerPosition == fountainPositionByDifficulty[difficulty])
                         fountainActivated = true;
                     break;
                 case ("shoot north"):
