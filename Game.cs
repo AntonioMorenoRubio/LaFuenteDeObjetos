@@ -160,7 +160,7 @@
                     playerPosition.Column--;
                 break;
             case ("move east"):
-                if (playerPosition.Column < rooms[1].Length - 1)
+                if (playerPosition.Column < rooms.GetLength(1) - 1)
                     playerPosition.Column++;
                 break;
             case ("move north"):
@@ -168,7 +168,7 @@
                     playerPosition.Row--;
                 break;
             case ("move south"):
-                if (playerPosition.Row < rooms[0].Length - 1)
+                if (playerPosition.Row < rooms.GetLength(0) - 1)
                     playerPosition.Row++;
                 break;
             case ("enable fountain"):
