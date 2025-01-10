@@ -21,23 +21,24 @@ namespace _31_FountainOfObjects
             [(2, 2), (4, 3)],
             [(2, 3),(2, 7),(5, 4),(7, 2)]
         };
-        static (int Row, int Column)[][] maelstormsPositionByDifficulty =
+        static List<List<(int Row, int Column)>> maelstormsPositionByDifficulty = new List<List<(int Row, int Column)>>
         {
-            [(3, 1)],
-            [(0, 1)],
-            [(4, 2),(3, 6)]
+            { new List<(int Row, int Column)> { (3, 1) } },
+            { new List<(int Row, int Column)> { (0, 1) } },
+            { new List<(int Row, int Column)> { (4, 2), (3, 6) } }
         };
-        static (int Row, int Column)[][] amaroksPositionByDifficulty =
+        static List<List<(int Row, int Column)>> amaroksPositionByDifficulty = new List<List<(int Row, int Column)>>
         {
-            [(2, 1)],
-            [(1, 4), (4, 1)],
-            [(2, 1),(2, 5),(6, 3)]
+            { new List<(int Row, int Column)> {(2, 1) } },
+            { new List<(int Row, int Column)> {(1, 4), (4, 1) } },
+            { new List<(int Row, int Column)> {(2, 1), (2, 5), (6, 3) } }
         };
 
         static (int Row, int Column) playerPosition;
         static bool gameCompleted = false;
         static bool fountainActivated = false;
         static bool playerDead = false;
+        static int arrows = 5;
 
         public static void Boot()
         {
@@ -64,6 +65,7 @@ namespace _31_FountainOfObjects
             {
                 Console.WriteLine("------------------------------------------------------------------------------------------");
                 Console.WriteLine($"You are in the room at (Row:{playerPosition.Row}, Column:{playerPosition.Column}).");
+                Console.WriteLine($"You are carrying {arrows} arrows.");
 
                 if (playerPosition == entrancePosition[difficulty])
                 {
@@ -132,7 +134,7 @@ namespace _31_FountainOfObjects
                 Console.Write("What do you want to do? ");
                 EvaluatePlayerActionsInGameLoop();
 
-                for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Length; i++)
+                for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
                 {
                     (int, int) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
                     if (playerPosition == maelstorm)
@@ -201,6 +203,110 @@ namespace _31_FountainOfObjects
                 case ("enable fountain"):
                     if (playerPosition == fountainPosition[difficulty])
                         fountainActivated = true;
+                    break;
+                case ("shoot north"):
+                    if (arrows == 0)
+                    {
+                        DisplayDescriptiveText("You have no arrows to shoot.");
+                    }
+                    else
+                    {
+                        arrows--;
+                        for (int i = 0; i < amaroksPositionByDifficulty[difficulty].Count; i++)
+                        {
+                            (int Row, int Column) amarok = amaroksPositionByDifficulty[difficulty][i];
+                            if (amarok.Row == playerPosition.Row - 1 && amarok.Column == playerPosition.Column)
+                            {
+                                amaroksPositionByDifficulty[difficulty].Remove(amarok);
+                            }
+                        }
+                        for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
+                        {
+                            (int Row, int Column) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
+                            if (maelstorm.Row == playerPosition.Row - 1 && maelstorm.Column == playerPosition.Column)
+                            {
+                                maelstormsPositionByDifficulty[difficulty].Remove(maelstorm);
+                            }
+                        }
+                    }
+                    break;
+                case ("shoot south"):
+                    if (arrows == 0)
+                    {
+                        DisplayDescriptiveText("You have no arrows to shoot.");
+                    }
+                    else
+                    {
+                        arrows--;
+                        for (int i = 0; i < amaroksPositionByDifficulty[difficulty].Count; i++)
+                        {
+                            (int Row, int Column) amarok = amaroksPositionByDifficulty[difficulty][i];
+                            if (amarok.Row == playerPosition.Row + 1 && amarok.Column == playerPosition.Column)
+                            {
+                                amaroksPositionByDifficulty[difficulty].Remove(amarok);
+                            }
+                        }
+                        for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
+                        {
+                            (int Row, int Column) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
+                            if (maelstorm.Row == playerPosition.Row + 1 && maelstorm.Column == playerPosition.Column)
+                            {
+                                maelstormsPositionByDifficulty[difficulty].Remove(maelstorm);
+                            }
+                        }
+                    }
+                    break;
+                case ("shoot west"):
+                    if (arrows == 0)
+                    {
+                        DisplayDescriptiveText("You have no arrows to shoot.");
+                    }
+                    else
+                    {
+                        arrows--;
+                        for (int i = 0; i < amaroksPositionByDifficulty[difficulty].Count; i++)
+                        {
+                            (int Row, int Column) amarok = amaroksPositionByDifficulty[difficulty][i];
+                            if (amarok.Row == playerPosition.Row && amarok.Column == playerPosition.Column - 1)
+                            {
+                                amaroksPositionByDifficulty[difficulty].Remove(amarok);
+                            }
+                        }
+                        for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
+                        {
+                            (int Row, int Column) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
+                            if (maelstorm.Row == playerPosition.Row && maelstorm.Column == playerPosition.Column - 1)
+                            {
+                                maelstormsPositionByDifficulty[difficulty].Remove(maelstorm);
+                            }
+                        }
+                    }
+                    break;
+                case ("shoot east"):
+                    if (arrows == 0)
+                    {
+                        DisplayDescriptiveText("You have no arrows to shoot.");
+                    }
+                    else
+                    {
+                        arrows--;
+                        for (int i = 0; i < amaroksPositionByDifficulty[difficulty].Count; i++)
+                            {
+                                (int Row, int Column) amarok = amaroksPositionByDifficulty[difficulty][i];
+                                if (amarok.Row == playerPosition.Row && amarok.Column == playerPosition.Column + 1)
+                                {
+                                    amaroksPositionByDifficulty[difficulty].Remove(amarok);
+                                }
+                            }
+                        for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
+                        {
+                            (int Row, int Column) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
+                            if (maelstorm.Row == playerPosition.Row && maelstorm.Column == playerPosition.Column + 1 )
+                            {
+                                maelstormsPositionByDifficulty[difficulty].Remove(maelstorm);
+                            }
+                        }
+                    }
                     break;
                 default:
                     break;
