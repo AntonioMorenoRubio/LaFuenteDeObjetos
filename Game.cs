@@ -141,23 +141,8 @@
 
     private static void ApplyMaelstormOnPlayer((int Row, int Column) maelstorm)
     {
-        if (maelstorm.Row >= rooms[0].Length - 2 && maelstorm.Column <= 2)
-            maelstorm = (rooms[0].Length - 1, 0);
-        else if (maelstorm.Row >= rooms[0].Length - 2 && maelstorm.Column > 2)
-            maelstorm = (rooms[0].Length - 1, maelstorm.Column - 2);
-        else if (maelstorm.Row < rooms[0].Length - 2 && maelstorm.Column <= 2)
-            maelstorm = (++maelstorm.Row, 0);
-        else
-            maelstorm = (++maelstorm.Row, maelstorm.Column - 2);
-
-        if (playerPosition.Row <= 1 && playerPosition.Column >= rooms[1].Length - 2)
-            playerPosition = (0, rooms[1].Length - 1);
-        else if (playerPosition.Row <= 1 && playerPosition.Column <= rooms[1].Length - 2)
-            playerPosition = (0, playerPosition.Column + 2);
-        else if (playerPosition.Row >= 1 && playerPosition.Column >= rooms[1].Length - 2)
-            playerPosition = (--playerPosition.Row, rooms[1].Length - 1);
-        else
-            playerPosition = (--playerPosition.Row, playerPosition.Column + 2);
+        maelstorm = (Math.Clamp(maelstorm.Row + 1, 0, rooms.GetLength(0) - 1), Math.Clamp(maelstorm.Column - 2, 0, rooms.GetLength(1) - 1));
+        playerPosition = (Math.Clamp(maelstorm.Row - 1, 0, rooms.GetLength(0) - 1), Math.Clamp(maelstorm.Column + 2, 0, rooms.GetLength(1) - 1));
     }
 
     private static void EvaluatePlayerActionsInGameLoop()
