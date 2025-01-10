@@ -101,58 +101,37 @@ namespace _31_FountainOfObjects
                     }
                 }
 
-                foreach ((int, int) pit in pitsPositionByDifficulty[difficulty])
+                if (pitsPositionByDifficulty[difficulty].Any(x => x == playerPosition))
                 {
-                    if (playerPosition == pit)
-                    {
-                        playerDead = true;
-                        DisplayDescriptiveText("You fall through a bottomless pit to your death. Game Over.");
-                        break;
-                    }
-                    else if (IsThreatAroundPlayer(pit))
-                    {
-                        DisplayDescriptiveText("You feel a draft. There is a pit in a nearby room.");
-                    }
-                }
-                if (playerDead)
+                    playerDead = true;
+                    DisplayDescriptiveText("You fall through a bottomless pit to your death. Game Over.");
                     break;
-
-                foreach ((int, int) amarok in amaroksPositionByDifficulty[difficulty])
-                {
-                    if (playerPosition == amarok)
-                    {
-                        playerDead = true;
-                        DisplayDescriptiveText("An amarok leaps onto you, biting you fiercely with its teeth, killing you. Game Over.");
-                        break;
-                    }
-                    else if (IsThreatAroundPlayer(amarok))
-                    {
-                        DisplayDescriptiveText("You can smell the rotten stench of an amarok in a nearby room.");
-                    }
                 }
-                if (playerDead)
+
+                foreach ((int Row, int Column) pit in pitsPositionByDifficulty[difficulty].Where(x => IsThreatAroundPlayer(x)))
+                    DisplayDescriptiveText("You feel a draft. There is a pit in a nearby room.");
+
+                if (amaroksPositionByDifficulty[difficulty].Any(x => x == playerPosition))
+                {
+                    playerDead = true;
+                    DisplayDescriptiveText("An amarok leaps onto you, biting you fiercely with its teeth, killing you. Game Over.");
                     break;
-
-                foreach ((int, int) maelstorm in maelstormsPositionByDifficulty[difficulty])
-                {
-                    if (IsThreatAroundPlayer(maelstorm))
-                    {
-                        DisplayDescriptiveText("You hear the growling and groaning of a maelstorm nearby.");
-                    }
                 }
+
+                foreach ((int Row, int Column) pit in amaroksPositionByDifficulty[difficulty].Where(x => IsThreatAroundPlayer(x)))
+                    DisplayDescriptiveText("You can smell the rotten stench of an amarok in a nearby room.");
+
+                foreach ((int Row, int Column) pit in amaroksPositionByDifficulty[difficulty].Where(x => IsThreatAroundPlayer(x)))
+                    DisplayDescriptiveText("You hear the growling and groaning of a maelstorm nearby.");
+
 
                 Console.Write("What do you want to do? ");
                 EvaluatePlayerActionsInGameLoop();
 
-                for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
+                if (maelstormsPositionByDifficulty[difficulty].Any(x => x == playerPosition))
                 {
-                    (int, int) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
-                    if (playerPosition == maelstorm)
-                    {
-                        ApplyMaelstormOnPlayer(maelstorm);
-                        DisplayDescriptiveText("You have found a maelstorm and it sends you away one room north and two rooms east.");
-                        break;
-                    }
+                    ApplyMaelstormOnPlayer(maelstormsPositionByDifficulty[difficulty].Where(x => x == playerPosition).First());
+                    DisplayDescriptiveText("You have found a maelstorm and it sends you away one room north and two rooms east.");
                 }
             }
         }
@@ -216,106 +195,42 @@ namespace _31_FountainOfObjects
                     break;
                 case ("shoot north"):
                     if (arrows == 0)
-                    {
                         DisplayDescriptiveText("You have no arrows to shoot.");
-                    }
                     else
                     {
                         arrows--;
-                        for (int i = 0; i < amaroksPositionByDifficulty[difficulty].Count; i++)
-                        {
-                            (int Row, int Column) amarok = amaroksPositionByDifficulty[difficulty][i];
-                            if (amarok.Row == playerPosition.Row - 1 && amarok.Column == playerPosition.Column)
-                            {
-                                amaroksPositionByDifficulty[difficulty].Remove(amarok);
-                            }
-                        }
-                        for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
-                        {
-                            (int Row, int Column) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
-                            if (maelstorm.Row == playerPosition.Row - 1 && maelstorm.Column == playerPosition.Column)
-                            {
-                                maelstormsPositionByDifficulty[difficulty].Remove(maelstorm);
-                            }
-                        }
+                        amaroksPositionByDifficulty[difficulty].RemoveAll(x => x.Row == playerPosition.Row - 1 && x.Column == playerPosition.Column);
+                        maelstormsPositionByDifficulty[difficulty].RemoveAll(x => x.Row == playerPosition.Row - 1 && x.Column == playerPosition.Column);
                     }
                     break;
                 case ("shoot south"):
                     if (arrows == 0)
-                    {
                         DisplayDescriptiveText("You have no arrows to shoot.");
-                    }
                     else
                     {
                         arrows--;
-                        for (int i = 0; i < amaroksPositionByDifficulty[difficulty].Count; i++)
-                        {
-                            (int Row, int Column) amarok = amaroksPositionByDifficulty[difficulty][i];
-                            if (amarok.Row == playerPosition.Row + 1 && amarok.Column == playerPosition.Column)
-                            {
-                                amaroksPositionByDifficulty[difficulty].Remove(amarok);
-                            }
-                        }
-                        for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
-                        {
-                            (int Row, int Column) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
-                            if (maelstorm.Row == playerPosition.Row + 1 && maelstorm.Column == playerPosition.Column)
-                            {
-                                maelstormsPositionByDifficulty[difficulty].Remove(maelstorm);
-                            }
-                        }
+                        amaroksPositionByDifficulty[difficulty].RemoveAll(x => x.Row == playerPosition.Row + 1 && x.Column == playerPosition.Column);
+                        maelstormsPositionByDifficulty[difficulty].RemoveAll(x => x.Row == playerPosition.Row + 1 && x.Column == playerPosition.Column);
                     }
                     break;
                 case ("shoot west"):
                     if (arrows == 0)
-                    {
                         DisplayDescriptiveText("You have no arrows to shoot.");
-                    }
                     else
                     {
                         arrows--;
-                        for (int i = 0; i < amaroksPositionByDifficulty[difficulty].Count; i++)
-                        {
-                            (int Row, int Column) amarok = amaroksPositionByDifficulty[difficulty][i];
-                            if (amarok.Row == playerPosition.Row && amarok.Column == playerPosition.Column - 1)
-                            {
-                                amaroksPositionByDifficulty[difficulty].Remove(amarok);
-                            }
-                        }
-                        for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
-                        {
-                            (int Row, int Column) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
-                            if (maelstorm.Row == playerPosition.Row && maelstorm.Column == playerPosition.Column - 1)
-                            {
-                                maelstormsPositionByDifficulty[difficulty].Remove(maelstorm);
-                            }
-                        }
+                        amaroksPositionByDifficulty[difficulty].RemoveAll(x => x.Row == playerPosition.Row && x.Column == playerPosition.Column - 1);
+                        maelstormsPositionByDifficulty[difficulty].RemoveAll(x => x.Row == playerPosition.Row && x.Column == playerPosition.Column - 1);
                     }
                     break;
                 case ("shoot east"):
                     if (arrows == 0)
-                    {
                         DisplayDescriptiveText("You have no arrows to shoot.");
-                    }
                     else
                     {
                         arrows--;
-                        for (int i = 0; i < amaroksPositionByDifficulty[difficulty].Count; i++)
-                            {
-                                (int Row, int Column) amarok = amaroksPositionByDifficulty[difficulty][i];
-                                if (amarok.Row == playerPosition.Row && amarok.Column == playerPosition.Column + 1)
-                                {
-                                    amaroksPositionByDifficulty[difficulty].Remove(amarok);
-                                }
-                            }
-                        for (int i = 0; i < maelstormsPositionByDifficulty[difficulty].Count; i++)
-                        {
-                            (int Row, int Column) maelstorm = maelstormsPositionByDifficulty[difficulty][i];
-                            if (maelstorm.Row == playerPosition.Row && maelstorm.Column == playerPosition.Column + 1 )
-                            {
-                                maelstormsPositionByDifficulty[difficulty].Remove(maelstorm);
-                            }
-                        }
+                        amaroksPositionByDifficulty[difficulty].RemoveAll(x => x.Row == playerPosition.Row && x.Column == playerPosition.Column + 1);
+                        maelstormsPositionByDifficulty[difficulty].RemoveAll(x => x.Row == playerPosition.Row && x.Column == playerPosition.Column + 1);
                     }
                     break;
                 case ("help"):
