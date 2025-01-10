@@ -61,6 +61,16 @@ namespace _31_FountainOfObjects
 
         private static void PlayGame()
         {
+            DisplayNarrativeText("You enter the Cavern of Objects, a maze of rooms filled with dangerous pits in search of the Fountain of Objects.\n" +
+                "Light is visible only in the entrance, and no other light is seen anywhere in the caverns.\n" +
+                "You must find navigate the Caverns with your other senses.\n" +
+                "Look out for pits. You will feel a breeze if a pit is in an adjacent room. If you enter a room with a pit, you will die.\n" +
+                "Maelstorms are violent forces of sentient wind. Entering a room with one could transport you to any other location in the caverns. You will be able to hear their growling and groaning in nearby rooms.\n" +
+                "Amaroks roam the caverns. Encountering one is certain death, but you can smell their rotten stench in nearby rooms.\n" +
+                "You carry with you a bow and a quiver of arrows. You can use them to shoot monsters in the caverns but be warned: you have a limited supply.\n" +
+                "Find the Fountain of Objects, activate it, and return to the entrance.");
+            DisplayDescriptiveText("You can write the help command to see what actions you can do.");
+
             while (gameCompleted != true)
             {
                 Console.WriteLine("------------------------------------------------------------------------------------------");
@@ -307,6 +317,12 @@ namespace _31_FountainOfObjects
                             }
                         }
                     }
+                    break;
+                case ("help"):
+                    DisplayDescriptiveText("Available commands:\n" +
+                        "move <north, west, south, east>: moves your character on the rows and columns. Moving south increases the Row you are in, moving north decreases the Row you are in. Moving east increases the Column you are in while moving west decreases the Column you are in.\n" +
+                        "shoot <north, west, south, east>: shoot an arrow to the next room in that direction. If an amarok or maelstorm is in that room, it is struck down.\n" +
+                        "enable fountain: enables the Fountain of Objects if you are in the room the Fountain is in.");
                     break;
                 default:
                     break;
